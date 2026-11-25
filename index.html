@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="color-scheme" content="light dark"/>
+<link rel="icon" href="data:,"/>
+<title>Dental Booking Assistant — Live Demo for Clinics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F8F7; --surface:#FFFFFF; --surface2:#EEF6F4; --text:#0F2220; --muted:#5B6B68; --line:#DDE8E4;
+  --teal:#0F766E; --teal2:#0D9488; --teal-light:#CCFBF1; --amber:#F59E0B; --radius:18px;
+  --shadow:0 20px 50px rgba(15,118,110,.14);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0B1413; --surface:#12201E; --surface2:#162A27; --text:#E6F2EF; --muted:#9AB0AB; --line:#233A36; --shadow:0 20px 50px rgba(0,0,0,.45); --teal-light:#134E4A; }
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.6}
+h1,h2,h3{font-family:"Plus Jakarta Sans",Inter,system-ui,sans-serif;line-height:1.08;letter-spacing:-.02em;margin:0}
+a{color:var(--teal)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:18px 0;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-family:"Plus Jakarta Sans",sans-serif}
+.brand-badge{width:42px;height:42px;border-radius:12px;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:20px}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);padding:8px 12px;border-radius:999px;font-size:13px;font-weight:600}
+.dot{width:8px;height:8px;border-radius:50%;background:#22C55E;box-shadow:0 0 0 4px rgba(34,197,94,.18)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:999px;border:1px solid transparent;font-weight:700;text-decoration:none;cursor:pointer;font-size:15px}
+.btn-primary{background:var(--teal);color:#fff}.btn-primary:hover{background:var(--teal2)}
+.btn-ghost{background:var(--surface);color:var(--text);border-color:var(--line)}
+.hero{padding:28px 0 36px;display:grid;grid-template-columns:1.02fr .98fr;gap:36px;align-items:start}
+.hero h1{font-size:clamp(36px,5vw,58px)}
+.hero h1 em{font-style:normal;color:var(--teal)}
+.lead{font-size:18px;color:var(--muted);margin:18px 0 22px;max-width:560px}
+.hero-points{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0}
+.point{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+.point b{display:block;font-size:22px;line-height:1;color:var(--teal)}
+.point span{font-size:13px;color:var(--muted)}
+.note{font-size:13px;color:var(--muted);background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+/* PHONE / DEMO */
+.demo-card{background:var(--surface);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);overflow:hidden}
+.demo-head{padding:16px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line)}
+.avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#14B8A6);color:#fff;display:grid;place-items:center;font-weight:800}
+.demo-head b{display:block;line-height:1.2}.demo-head span{font-size:13px;color:var(--muted)}
+.online{margin-left:auto;font-size:12px;font-weight:700;color:var(--teal);background:var(--surface2);padding:6px 10px;border-radius:999px}
+.chat{height:430px;overflow-y:auto;padding:16px;background:radial-gradient(circle at top right, rgba(13,148,136,.08), transparent 55%), var(--bg);display:flex;flex-direction:column;gap:10px}
+.msg{max-width:86%;padding:11px 13px;border-radius:16px;font-size:14.5px;line-height:1.45;animation:pop .25s ease}
+.msg.bot{background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px;align-self:flex-start}
+.msg.user{background:var(--teal);color:#fff;border-bottom-right-radius:4px;align-self:flex-end}
+.msg small{display:block;margin-top:6px;opacity:.7;font-size:11px}
+.summary{background:#FFFBEB;border:1px solid #FDE68A;color:#92400E;border-radius:12px;padding:12px;font-size:14px}
+@media(prefers-color-scheme:dark){.summary{background:#451A03;color:#FDE68A;border-color:#92400E}}
+@keyframes pop{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.typing{align-self:flex-start;background:var(--surface);border:1px solid var(--line);padding:10px 12px;border-radius:999px;font-size:13px;color:var(--muted)}
+.chips{padding:12px 14px 6px;display:flex;flex-wrap:wrap;gap:8px;border-top:1px solid var(--line);background:var(--surface)}
+.chip{min-height:40px;padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-weight:600;cursor:pointer;font-size:14px}
+.chip:hover{border-color:var(--teal);color:var(--teal)}
+.inputrow{display:flex;gap:8px;padding:10px 12px 14px;background:var(--surface)}
+.inputrow input{flex:1;min-height:48px;border:1px solid var(--line);border-radius:999px;padding:0 16px;background:var(--bg);color:var(--text);font-size:15px;min-width:0}
+.inputrow button{min-height:48px;min-width:48px;border-radius:999px;border:none;background:var(--teal);color:#fff;font-weight:800;cursor:pointer;padding:0 16px}
+.inbox{margin-top:16px;background:var(--surface);border:1px dashed var(--teal);border-radius:18px;padding:16px}
+.inbox h3{font-size:16px;margin-bottom:6px}.inbox p{margin:0;color:var(--muted);font-size:14px}
+.inbox .booking{margin-top:10px;background:var(--surface2);border-radius:12px;padding:12px;font-size:14px;display:none}
+/* SECTIONS */
+section{padding:42px 0}
+.kicker{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);margin-bottom:10px}
+.sec-head{max-width:720px}.sec-head h2{font-size:clamp(28px,3.6vw,40px)}.sec-head p{color:var(--muted);font-size:17px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.card h3{font-size:18px;margin:10px 0 6px}.card p{color:var(--muted);margin:0;font-size:15px}
+.icon{width:44px;height:44px;border-radius:12px;background:var(--surface2);display:grid;place-items:center;font-size:20px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+.step{position:relative}.step-num{width:36px;height:36px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font-weight:800}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.compare ul{margin:10px 0 0;padding-left:18px;color:var(--muted)} .compare li{margin:6px 0}
+.bad{border-color:#FECACA}.good{border-color:var(--teal)}
+.profile{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}
+.profile-pic{width:84px;height:84px;border-radius:20px;background:var(--teal);color:#fff;display:grid;place-items:center;font-family:"Plus Jakarta Sans";font-weight:800;font-size:28px}
+details{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px 16px;margin:10px 0}
+summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+details p{color:var(--muted);margin:0 0 14px}
+.cta{background:var(--teal);color:#fff;border-radius:24px;padding:28px;display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:center}
+.cta h2{color:#fff}.cta p{opacity:.92}.cta .btn{background:#fff;color:var(--teal);width:100%}
+.cta .btn-ghost2{background:transparent;color:#fff;border-color:rgba(255,255,255,.5);width:100%;margin-top:10px}
+footer{padding:28px 0 40px;color:var(--muted);font-size:13px;text-align:center}
+.trybar{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.trybar button{min-height:40px}
+/* CHANNELS + VOICE */
+.chanbar{display:flex;gap:6px;padding:10px 12px 0;background:var(--surface)}
+.chanbar button{flex:1;min-height:38px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-weight:700;cursor:pointer;font-size:13.5px;padding:6px 4px}
+.chanbar button.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.chat.wa{background:radial-gradient(circle at top right, rgba(37,211,102,.12), transparent 55%), #ECE5DD}
+@media(prefers-color-scheme:dark){.chat.wa{background:radial-gradient(circle at top right, rgba(37,211,102,.12), transparent 55%), #0B141A}}
+.voicebar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 12px;background:var(--surface2);border-top:1px solid var(--line)}
+.voicebar .vbtn{min-height:40px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--text);font-weight:700;cursor:pointer;font-size:14px}
+.voicebar .vbtn.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.voicebar .vstatus{font-size:12.5px;color:var(--muted);flex:1;min-width:180px}
+#micBtn.listening{background:#DC2626;color:#fff;border-color:#DC2626;animation:pulse 1s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(220,38,38,.45)}100%{box-shadow:0 0 0 10px rgba(220,38,38,0)}}
+@media(max-width:860px){.hero{grid-template-columns:1fr}.grid3,.steps{grid-template-columns:1fr}.grid2,.compare,.cta{grid-template-columns:1fr}.hero-points{grid-template-columns:1fr 1fr}.chat{height:460px}.profile{grid-template-columns:1fr}}
+@media(max-width:420px){.hero-points{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand"><div class="brand-badge">✦</div><div>BrightSmile Assistant<br><span style="font-weight:500;color:var(--muted);font-size:13px">Live prototype for dental clinics</span></div></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><span class="pill"><span class="dot"></span> Demo is live — try it</span><a class="btn btn-ghost" href="#how">How it works</a></div>
+  </div>
+
+  <div class="hero">
+    <div>
+      <div class="pill" style="margin-bottom:16px">For clinics with no online booking &amp; no chat</div>
+      <h1>Your patients try to book at 9pm. <em>Your reception is closed.</em></h1>
+      <p class="lead">This is an interactive front-end demo of the assistant I build for dental clinics — try the full booking flow below with sample clinic data, by typing <b>or by voice</b>. In your live build, it answers patient questions, checks your real calendar, and books appointments on your website and WhatsApp, 24/7 — set up the way your clinic wants it.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a href="#demo" class="btn btn-primary">▶ Try the live demo</a>
+        <a href="#why-me" class="btn btn-ghost">Why work with me?</a>
+      </div>
+      <div class="hero-points">
+        <div class="point"><b>&lt; 5 sec</b><span>reply to every patient message</span></div>
+        <div class="point"><b>24 / 7</b><span>bookings while you sleep</span></div>
+        <div class="point"><b>0 missed</b><span>after-hours enquiries lost to voicemail</span></div>
+        <div class="point"><b>3 channels</b><span>website chat, WhatsApp &amp; voice in one inbox</span></div>
+      </div>
+      <div class="note"><strong>Why I made this:</strong> I researched 538 dental clinics across the UK, Canada, the US, Italy and Europe that have no online booking and no chatbot. Most lose patients simply because nobody replies fast enough. This demo shows the patient experience — your live version uses your clinic's name, real prices and real diary. Calendar, WhatsApp, email delivery and reminders are connected during your build, not in this sample demo.</div>
+      <div class="trybar">
+        <span style="font-size:13px;font-weight:700;color:var(--muted);align-self:center">Quick tries:</span>
+        <button class="chip" onclick="quickAsk('How much is teeth whitening?')">Whitening price</button>
+        <button class="chip" onclick="quickAsk('Do you have parking?')">Parking</button>
+        <button class="chip" onclick="quickAsk('I have severe tooth pain')">Tooth pain</button>
+        <button class="chip" onclick="quickAsk('What are your opening hours?')">Opening hours</button>
+        <button class="chip" onclick="quickAsk('Quanto costa la pulizia dei denti?')">🇮🇹 Try in Italian</button>
+        <button class="chip" onclick="quickAsk('Can I speak to a person?')">Talk to a human</button>
+      </div>
+    </div>
+
+    <div id="demo">
+      <div class="demo-card" aria-label="Live booking assistant demo">
+        <div class="demo-head">
+          <div class="avatar">B</div>
+          <div><b>BrightSmile Dental</b><span id="chanLabel">Demo clinic • replies instantly</span></div>
+          <span class="online">● Online</span>
+        </div>
+        <div class="chanbar" aria-label="Choose how to contact the clinic">
+          <button type="button" id="chanWeb" class="on" onclick="setChannel('web')">🌐 Website chat</button>
+          <button type="button" id="chanWa" onclick="setChannel('wa')">💬 WhatsApp</button>
+          <button type="button" id="chanVoice" onclick="startVoiceCall()">📞 Voice call</button>
+        </div>
+        <div class="chat" id="chat" aria-live="polite"></div>
+        <div class="chips" id="chips"></div>
+        <div class="voicebar">
+          <button type="button" class="vbtn" id="voiceToggle" onclick="toggleVoice()">🔇 Voice replies: Off</button>
+          <button type="button" class="vbtn" id="micBtn" onclick="startListening()">🎙️ Tap to speak</button>
+          <span class="vstatus" id="voiceStatus">Voice agent built in: hear replies spoken aloud and book by talking. Works best in Chrome / Edge.</span>
+        </div>
+        <form class="inputrow" id="chatForm">
+          <input id="chatInput" type="text" placeholder="Type a message… e.g. I need a check-up" autocomplete="off" aria-label="Type a message to the assistant"/>
+          <button type="submit" aria-label="Send message">Send</button>
+        </form>
+      </div>
+
+      <div class="inbox" id="inbox">
+        <h3>📥 What your clinic sees</h3>
+        <p id="inboxEmpty">Every booking made in this demo appears here instantly — with patient name, treatment, date &amp; time. In your live build, the same booking is also sent to your reception email / calendar. Complete the demo booking to see it.</p>
+        <div class="booking" id="bookingCard"></div>
+        <button class="chip" id="restartBtn" style="margin-top:12px">↺ Restart demo</button>
+      </div>
+    </div>
+  </div>
+
+  <section id="how">
+    <div class="sec-head"><div class="kicker">How it works</div><h2>From “Hello” to a confirmed appointment in under a minute</h2><p>No forms. No phone queue. No “we’ll call you back.” The patient just talks — the assistant does the rest.</p></div>
+    <div class="steps">
+      <div class="card step"><div class="step-num">1</div><h3>Patient asks anything</h3><p>“How much is a clean?” “Do you open Saturdays?” “I’m in pain.” Typed or spoken — on your website or WhatsApp — the assistant answers from your real prices, hours and policies, in your clinic’s tone and the patient’s language.</p></div>
+      <div class="card step"><div class="step-num">2</div><h3>It offers real available times</h3><p>Connected to your calendar, it only shows slots that are actually free. No double-bookings, no back-and-forth emails.</p></div>
+      <div class="card step"><div class="step-num">3</div><h3>Booking confirmed + reminder sent</h3><p>Patient gets an instant confirmation. Your team gets the booking in email/calendar. Automatic reminders cut no-shows.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="kicker">The problem it solves</div><h2>Without it vs. with it</h2></div>
+    <div class="compare">
+      <div class="card bad"><h3>❌ Clinic without an assistant</h3><ul><li>Evening &amp; weekend enquiries go to voicemail</li><li>Patients Google the next clinic that replies first</li><li>Reception spends hours on price &amp; hours questions</li><li>Forgotten appointments = empty chairs</li><li>No booking outside 9–5</li></ul></div>
+      <div class="card good"><h3>✓ Clinic with this assistant</h3><ul><li>Every message answered in seconds, day or night</li><li>Patients book on the spot, while intent is high</li><li>Reception only handles real patient care</li><li>Automatic reminders before every appointment</li><li>Full log of every conversation for your team</li></ul></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="kicker">What’s included</div><h2>Everything set up for you — you don’t touch any tech</h2></div>
+    <div class="grid3">
+      <div class="card"><div class="icon">💬</div><h3>Website + WhatsApp chat</h3><p>One assistant, both places your patients already are. Same answers, same calendar.</p></div>
+      <div class="card"><div class="icon">📅</div><h3>Live calendar booking</h3><p>Google Calendar / your practice system. Only real free slots are offered.</p></div>
+      <div class="card"><div class="icon">💷</div><h3>Your real prices &amp; FAQs</h3><p>Treatments, prices, insurance, parking, directions — loaded from your clinic, updated anytime.</p></div>
+      <div class="card"><div class="icon">🔔</div><h3>No-show reminders</h3><p>Automatic confirmation + reminder messages so booked patients actually show up.</p></div>
+      <div class="card"><div class="icon">🚨</div><h3>Emergency triage</h3><p>Pain, swelling or a broken tooth? The assistant flags it urgent and pushes the patient to call / books the earliest slot.</p></div>
+      <div class="card"><div class="icon">🌍</div><h3>Your language</h3><p>English, Italian, Spanish, German and more — it replies in the patient’s language automatically. Try the Italian quick-try button above the demo.</p></div>
+      <div class="card"><div class="icon">🎙️</div><h3>Voice agent</h3><p>Patients who prefer talking can speak instead of typing — the assistant listens, answers out loud and books by voice. Tap “Voice call” in the demo to try it. In your live build the same voice agent handles WhatsApp voice notes and phone calls.</p></div>
+      <div class="card"><div class="icon">🙋</div><h3>Human handoff</h3><p>Nobody is trapped talking to a bot. Anyone who asks for a person gets your phone number instantly, or leaves a name and number for a callback from your team.</p></div>
+    </div>
+  </section>
+
+  <section id="why-me">
+    <div class="card" style="padding:28px">
+      <div class="profile">
+        <div class="profile-pic">AR</div>
+        <div>
+          <div class="kicker">Why book it with me?</div>
+          <h2 style="font-size:32px;margin-bottom:10px">I’m Ahmad — I build it myself, start to finish.</h2>
+          <p style="color:var(--muted);margin:0 0 12px">I’m a Software Engineering student at COMSATS University in Pakistan, and I build websites and online stores for clients internationally — including Shopify stores in the UK and Italy. I’m funding my studies through this work, which is exactly why I keep my prices far below an agency’s and why every clinic matters to me personally.</p>
+          <div class="grid2" style="margin-top:14px">
+            <div style="background:var(--surface2);border-radius:12px;padding:14px"><b>You talk directly to me</b><br><span style="color:var(--muted);font-size:14px">No account manager, no ticket queue. Message me, I reply and I fix it.</span></div>
+            <div style="background:var(--surface2);border-radius:12px;padding:14px"><b>Agency quality, student overhead</b><br><span style="color:var(--muted);font-size:14px">No office, no sales team to pay for — you only pay for the build itself.</span></div>
+            <div style="background:var(--surface2);border-radius:12px;padding:14px"><b>Fast delivery</b><br><span style="color:var(--muted);font-size:14px">Most clinics are live in a few days once I have your prices, hours and calendar access.</span></div>
+            <div style="background:var(--surface2);border-radius:12px;padding:14px"><b>Try the demo first</b><br><span style="color:var(--muted);font-size:14px">You’ve already used the product above. Your version is the same — with your name, prices and diary.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="kicker">Getting started</div><h2>Live in 3 simple steps</h2></div>
+    <div class="steps">
+      <div class="card"><div class="step-num">1</div><h3>10-minute call</h3><p>We confirm your treatments, prices, opening hours and how your diary works. No commitment.</p></div>
+      <div class="card"><div class="step-num">2</div><h3>I build &amp; you test it</h3><p>I set up your assistant and send you a private test link. Try to break it. Ask for any wording changes.</p></div>
+      <div class="card"><div class="step-num">3</div><h3>Go live</h3><p>One line of code on your website (I can add it for you) + a WhatsApp link. Bookings start coming in.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="kicker">Questions clinics ask</div><h2>FAQ</h2></div>
+    <div style="margin-top:16px">
+      <details><summary>Will it give wrong medical advice?</summary><p>No. It only answers booking, price, hours and clinic-policy questions from information you approve. Anything clinical is answered with “please speak to the dentist” and the patient is offered an appointment or your phone number.</p></details>
+      <details><summary>What if a patient needs a human?</summary><p>The assistant offers your phone number at any point and can hand the conversation to your team during opening hours. Urgent pain cases are always pushed to call immediately.</p></details>
+      <details><summary>Do I need to change my website or calendar?</summary><p>No. It sits on your current website and works with Google Calendar and most practice diaries. If you have no online calendar yet, I’ll set a simple one up as part of the build.</p></details>
+      <details><summary>How much does it cost?</summary><p>Pricing is simple and quoted on the short call, based on your clinic size — a one-off setup plus a small monthly fee for hosting, calendar connection and support. No long contract is required to start, and it’s significantly less than agency quotes because you’re working directly with me.</p></details>
+      <details><summary>Can it match our clinic’s name, prices and tone?</summary><p>Yes — that’s the whole point. This demo uses a sample clinic (“BrightSmile”). Yours uses your name, logo colours, real treatment list, real prices and your way of speaking to patients.</p></details>
+      <details><summary>Do we have to take both website and WhatsApp?</summary><p>No — it’s set up the way your clinic wants: website only, WhatsApp only, or both together in one inbox, with the voice agent on or off. We decide it together on the 10-minute call.</p></details>
+      <details><summary>How does the voice agent work?</summary><p>Patients tap the call / microphone button and simply talk. The assistant listens, answers out loud and books the appointment by voice — ideal for older patients and anyone who dislikes typing. Try “Voice call” at the top of the demo above (best in Chrome or Edge).</p></details>
+    </div>
+  </section>
+
+  <div class="cta">
+    <div><h2>Want this on your clinic’s website this week?</h2><p>Reply to my email or message me directly. Send me your treatment price list and opening hours, and I’ll send back a private test version with your clinic’s name on it — so you can try it before you decide anything.</p></div>
+    <div>
+      <a class="btn" href="mailto:ahmadrafiquevhr@gmail.com?subject=I%20want%20the%20booking%20assistant%20for%20my%20clinic&body=Hi%20Ahmad%2C%0A%0AI%20tried%20the%20demo.%20Please%20make%20a%20test%20version%20for%20my%20clinic.%0A%0AClinic%20name%3A%0AWebsite%3A%0A">✉️ Email Ahmad — request my test version</a>
+      <a class="btn btn-ghost2" href="https://wa.me/923290192192" target="_blank" rel="noopener">💬 WhatsApp Ahmad — +92 329 0192192</a>
+      <a class="btn btn-ghost2" href="#demo">↑ Try the demo again</a>
+      <p style="font-size:13px;margin:10px 0 0;opacity:.85">Email: ahmadrafiquevhr@gmail.com • Phone / WhatsApp: +92 329 0192192 • I reply personally, usually within a few hours. No price in advance — we start with a free 10-minute call.</p>
+    </div>
+  </div>
+
+  <section id="email" style="padding-top:0">
+    <div class="sec-head"><div class="kicker">For Ahmad — outreach copy</div><h2>The personalised email that sends clinics to this demo</h2><p>Each email is personalised with the clinic's name, city and its specific gap (no online booking, no chatbot — from the 538-clinic research). Confirmed with Ahmad: <b>no price is quoted</b> — the only ask is a 10-minute call; the product covers <b>website + WhatsApp</b>, set up per clinic's wishes; emails go from his Gmail with replies to email or WhatsApp. This page does not send email itself — sending happens in small batches from Ahmad's Gmail.</p></div>
+    <div class="card" style="margin-top:18px">
+      <p style="color:var(--muted);font-size:13px;margin:0 0 8px">Subject: [Clinic Name] — patients in [City] can't book online yet (I built you a demo)</p>
+      <div style="font-size:15px">
+        <p>Hi [Clinic Name] team,</p>
+        <p>I was looking at dental clinics in [City] and noticed [Clinic Name] has no online booking and no chat on the website — so after hours, a patient who wants an appointment has to call and wait, and many simply book with the next clinic that replies.</p>
+        <p>I build a small booking assistant for clinics in exactly this position. It sits on your website and WhatsApp — both, or whichever you prefer, set up the way your clinic wants it — answers price / hours / parking questions instantly (patients can type or talk to it by voice), and books patients into your real calendar, 24/7. I made a live demo so you can see exactly how it would work for your patients: <b>[link to this demo page]</b> — tap it and try booking an appointment, including the voice agent at the top of the demo.</p>
+        <p>Why me? I'm Ahmad Rafique, a Software Engineering student at COMSATS University in Pakistan. I build websites and stores for international clients and I'm funding my studies through this work — so you get the build done personally by me, at well below agency prices, and you talk directly to the person who built it. Send me your price list and opening hours and I'll return a private test version with [Clinic Name] on it, free to try, before you decide anything.</p>
+        <p>Would a 10-minute call this week work to see if it fits your clinic?</p>
+        <p>Best regards,<br><b>Ahmad Rafique</b> — JackwithJones<br>ahmadrafiquevhr@gmail.com<br>Phone / WhatsApp: +92 329 0192192</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>Demo clinic “BrightSmile Dental” is a sample — prices, hours and availability shown are for demonstration, and calendar / WhatsApp / email integrations are shown as they work in a live build, not connected in this demo. Your live assistant uses your clinic’s real information.<br>Built by Ahmad Rafique • JackwithJones • Software Engineering student, COMSATS University Islamabad (Vehari Campus)</footer>
+</div>
+
+<script>
+var chat=document.getElementById('chat'), chips=document.getElementById('chips'), form=document.getElementById('chatForm'), input=document.getElementById('chatInput');
+var state={step:'service', service:null, date:null, time:null, name:null, voiceUsed:false};
+var services=[
+ {id:'checkup',label:'Check-up & Clean',price:'£65',mins:'45 min'},
+ {id:'whitening',label:'Teeth Whitening',price:'£249',mins:'60 min'},
+ {id:'emergency',label:'Emergency / Tooth Pain',price:'from £85',mins:'30 min'},
+ {id:'invisalign',label:'Invisalign Consultation',price:'Free',mins:'30 min'},
+ {id:'implant',label:'Implant Consultation',price:'Free',mins:'40 min'}
+];
+function fmtDate(d){return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});}
+function nextDays(){var out=[],d=new Date();d.setDate(d.getDate()+1);while(out.length<4){if(d.getDay()!==0) out.push(new Date(d)); d.setDate(d.getDate()+1);} return out;}
+function scroll(){chat.scrollTop=chat.scrollHeight;}
+function addMsg(text,who,extra){var div=document.createElement('div');div.className='msg '+who;div.innerHTML=text+(extra?'<small>'+extra+'</small>':'');chat.appendChild(div);scroll();if(who==='bot'){speak(text);}return div;}
+function typing(cb,delay){var t=document.createElement('div');t.className='typing';t.textContent='Assistant is typing…';chat.appendChild(t);scroll();setTimeout(function(){t.remove();cb();},delay||650);}
+function setChips(items){chips.innerHTML='';items.forEach(function(it){var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=it.label;b.onclick=function(){handleChip(it);};chips.appendChild(b);});}
+function serviceChips(){return services.map(function(s){return {label:s.label+' — '+s.price, value:s.id, type:'service'};});}
+function start(){
+ chat.innerHTML=''; state={step:'service',service:null,date:null,time:null,name:null,voiceUsed:false};
+ document.getElementById('bookingCard').style.display='none'; document.getElementById('inboxEmpty').style.display='block';
+ typing(function(){
+  addMsg("Hi 👋 Welcome to <b>BrightSmile Dental</b>. I can answer questions or book you in — it takes under a minute.<br><br>What would you like to book?",'bot');
+  setChips(serviceChips().concat([{label:'💷 See all prices',value:'prices',type:'faq'},{label:'🕐 Opening hours',value:'hours',type:'faq'},{label:'📞 Talk to a human',value:'human',type:'faq'}]));
+ });
+}
+function handleChip(it){
+ if(it.type==='service'){var s=services.find(function(x){return x.id===it.value}); selectService(s);}
+ else if(it.type==='date'){state.date=it.label; addMsg(it.label,'user'); askTime();}
+ else if(it.type==='time'){state.time=it.label; addMsg(it.label,'user'); askName();}
+ else if(it.type==='faq'){quickAsk(it.value==='prices'?'How much does it cost?':(it.value==='human'?'Can I speak to a person?':'What are your opening hours?'));}
+ else if(it.type==='confirm'){confirmBooking();}
+ else if(it.type==='restart'){start();}
+}
+function selectService(s){
+ state.service=s; addMsg(s.label,'user');
+ typing(function(){
+  if(s.id==='emergency'){addMsg("I'm sorry you're in pain — we'll get you seen as soon as possible. Here are the earliest available appointments:",'bot');}
+  else{addMsg("Great choice. <b>"+s.label+"</b> is <b>"+s.price+"</b> ("+s.mins+"). Which day suits you best?",'bot');}
+  state.step='date';
+  setChips(nextDays().map(function(d){return {label:fmtDate(d),value:fmtDate(d),type:'date'};}));
+ });
+}
+function askTime(){typing(function(){addMsg("Perfect — <b>"+state.date+"</b>. These times are free for <b>"+state.service.label+"</b>:<br>Pick one:",'bot');state.step='time';setChips(['09:00','10:30','13:00','15:30','17:00'].map(function(t){return {label:t,value:t,type:'time'};}));});}
+function askName(){typing(function(){addMsg("Almost done. What name should I book it under? Just type your name below 👇",'bot');state.step='name';setChips([]);input.focus();});}
+function confirmBooking(){
+ typing(function(){
+  var html="<b>✅ Appointment confirmed</b><br><br>🦷 <b>"+state.service.label+"</b> — "+state.service.price+"<br>📅 "+state.date+" at "+state.time+"<br>👤 "+state.name+"<br><br>We've sent a confirmation and will remind you the day before. Need to change it? Just message here anytime.";
+  var d=addMsg(html,'bot'); d.classList.add('summary');
+  var bc=document.getElementById('bookingCard'); bc.style.display='block'; document.getElementById('inboxEmpty').style.display='none';
+  bc.innerHTML="<b>🆕 New booking — just now</b><br>Patient: <b>"+state.name+"</b><br>Treatment: "+state.service.label+" ("+state.service.price+")<br>When: "+state.date+" • "+state.time+"<br>Source: "+(state.voiceUsed?'Voice agent':'Website / WhatsApp assistant')+" • Status: Confirmed ✓<br><span style='color:var(--muted)'>Also added to calendar + reminder scheduled.</span>";
+  state.step='done'; setChips([{label:'Book another appointment',value:'restart',type:'restart'},{label:'💷 See prices',value:'prices',type:'faq'}]);
+ });
+}
+function faqAnswer(q){
+ var s=q.toLowerCase();
+ if(s.indexOf('whiten')>-1) return "Teeth whitening is <b>£249</b> (60 minutes), including a check that your teeth are suitable first. Would you like me to book you in?";
+ if(s.indexOf('price')>-1||s.indexOf('cost')>-1||s.indexOf('much')>-1) return "<b>Our prices:</b><br>• Check-up &amp; Clean — £65<br>• Teeth Whitening — £249<br>• Emergency appointment — from £85<br>• Invisalign consultation — Free<br>• Implant consultation — Free<br><br>Tap a treatment below to book it.";
+ if(s.indexOf('park')>-1) return "Yes — we have free patient parking right outside the clinic, plus we're a 3-minute walk from the station. Would you like to book a visit?";
+ if(s.indexOf('hour')>-1||s.indexOf('open')>-1||s.indexOf('saturday')>-1) return "We're open <b>Mon–Fri 9am–6pm</b> and <b>Saturday 9am–2pm</b>. This assistant can book you in 24/7, even when we're closed. Want me to find you a slot?";
+ if(s.indexOf('pain')>-1||s.indexOf('emergency')>-1||s.indexOf('hurt')>-1||s.indexOf('ache')>-1) return "I'm sorry you're in pain. For severe pain, swelling or a broken tooth, please also call us. I can book you the <b>earliest emergency slot</b> right now — tap below.";
+ if(s.indexOf('insurance')>-1) return "We work with most major dental insurance providers and can provide itemised receipts for claims. Bring your policy details to your appointment and we'll help with the paperwork.";
+ if(s.indexOf('where')>-1||s.indexOf('address')>-1||s.indexOf('location')>-1) return "We're at the demo clinic address on the clinic website — with free parking outside. In your live version, I'd give patients directions and a map link here. Shall I book you in?";
+ if(s.indexOf('cancel')>-1||s.indexOf('reschedul')>-1||s.indexOf('change')>-1) return "No problem — appointments can be changed or cancelled free of charge up to 24 hours before. Just tell me your name and your new preferred time.";
+ if(s.indexOf('invisalign')>-1) return "Invisalign consultations are <b>free</b> (30 minutes) and include a scan and a personalised quote — no obligation. Shall I book yours?";
+ if(s.indexOf('quanto')>-1||s.indexOf('pulizia')>-1||s.indexOf('prenotare')>-1||s.indexOf('costa')>-1) return "La pulizia dei denti con controllo costa <b>£65</b> e dura 45 minuti. Vuole che le prenoti una visita? Tocchi un trattamento qui sotto.<br><br><i>(I reply in each patient's own language automatically — Italian, Spanish, German and more.)</i>";
+ if(s.indexOf('cuánto')>-1||s.indexOf('cuanto')>-1||s.indexOf('cuesta')>-1||s.indexOf('precio')>-1||s.indexOf('limpieza')>-1) return "La limpieza dental con revisión cuesta <b>£65</b> y dura 45 minutos. ¿Quiere que le reserve una cita? Toque un tratamiento abajo.";
+ if(s.indexOf('wie viel')>-1||s.indexOf('kostet')>-1||s.indexOf('zahnreinigung')>-1) return "Eine professionelle Zahnreinigung mit Kontrolle kostet <b>£65</b> und dauert 45 Minuten. Soll ich einen Termin für Sie buchen? Tippen Sie unten auf eine Behandlung.";
+ if(s.indexOf('human')>-1||s.indexOf('person')>-1||s.indexOf('reception')>-1||s.indexOf('speak to')>-1||s.indexOf('real person')>-1||s.indexOf('call me')>-1||s.indexOf('callback')>-1||s.indexOf('call back')>-1) return "Of course — you're never trapped with a bot. You can call the clinic on <b>0161 496 0000</b> during opening hours (Mon–Fri 9–6, Sat 9–2). Or tell me your name and number here and I'll pass it to the team for a callback. Outside hours, I can also book you in right now — tap a treatment below.";
+ if(s.indexOf('phone')>-1||s.indexOf('number')>-1||s.indexOf('contact')>-1) return "You can reach the clinic on <b>0161 496 0000</b> during opening hours (Mon–Fri 9–6, Sat 9–2) — or just book here with me in under a minute, any time.";
+ if(s.indexOf('review')>-1||s.indexOf('rating')>-1) return "We're rated <b>4.9 out of 5</b> from 480+ patient reviews at this demo clinic. After your visit, the assistant also sends a friendly review request automatically — that's how clinics grow their rating without pestering anyone.";
+ if(s.indexOf('child')>-1||s.indexOf('kids')>-1||s.indexOf('family')>-1) return "Yes, we see children and families — check-ups for under-16s are half price when booked with an adult appointment. Shall I find a slot that suits the family?";
+ if(s.indexOf('nervous')>-1||s.indexOf('scared')>-1||s.indexOf('anxious')>-1||s.indexOf('afraid')>-1) return "You're not alone — lots of our patients feel nervous. Tell the dentist when you arrive; appointments are unhurried and you can pause at any time. Booking the first slot of the day (09:00) usually feels calmest. Shall I look for one?";
+ return null;
+}
+function quickAsk(q){
+ if(!q) return; addMsg(q,'user');
+ typing(function(){var a=faqAnswer(q); if(a){addMsg(a,'bot'); if(state.step==='service'||state.step==='done'){setChips(serviceChips());}} else {addMsg("I can help with bookings, prices, hours, parking and insurance. For anything clinical, the dentist will advise you at your appointment. Would you like to book a check-up?",'bot'); setChips(serviceChips());}});
+}
+function handleUserText(v){
+ v=(v||'').trim(); if(!v) return;
+ if(state.step==='name'){
+   state.name=v.charAt(0).toUpperCase()+v.slice(1); addMsg(v,'user');
+   typing(function(){addMsg("Thanks, <b>"+state.name+"</b> — just to confirm:<br><br>🦷 "+state.service.label+"<br>📅 "+state.date+" at "+state.time+"<br><br>Shall I confirm this booking?",'bot'); state.step='confirm'; setChips([{label:'✓ Yes, confirm my booking',value:'confirm',type:'confirm'},{label:'Start again',value:'restart',type:'restart'}]);});
+   return;
+ }
+ quickAsk(v);
+}
+form.addEventListener('submit',function(e){
+ e.preventDefault(); var v=input.value; input.value=''; handleUserText(v);
+});
+document.getElementById('restartBtn').onclick=start;
+/* ---------- CHANNELS ---------- */
+function setChannel(ch){
+ var w=document.getElementById('chanWeb'), a=document.getElementById('chanWa'), lbl=document.getElementById('chanLabel');
+ if(ch==='wa'){ chat.classList.add('wa'); w.classList.remove('on'); a.classList.add('on'); lbl.textContent='WhatsApp • replies instantly'; }
+ else { chat.classList.remove('wa'); a.classList.remove('on'); w.classList.add('on'); lbl.textContent='Demo clinic • replies instantly'; }
+}
+/* ---------- VOICE AGENT ---------- */
+var voiceOn=false, recog=null;
+function stripHtml(h){var d=document.createElement('div'); d.innerHTML=h; return (d.textContent||'').replace(/\s+/g,' ').trim();}
+function speak(text){
+ if(!voiceOn || !('speechSynthesis' in window)) return;
+ try{ window.speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(stripHtml(text)); u.lang='en-GB'; u.rate=1.02; window.speechSynthesis.speak(u); }catch(e){}
+}
+function setVoiceUI(){
+ var b=document.getElementById('voiceToggle');
+ b.textContent=voiceOn?'🔊 Voice replies: On':'🔇 Voice replies: Off';
+ b.classList.toggle('on',voiceOn);
+}
+function toggleVoice(){
+ voiceOn=!voiceOn; setVoiceUI();
+ var st=document.getElementById('voiceStatus');
+ if(voiceOn){ st.textContent='Voice on — my replies are spoken aloud. Tap 🎙️ and talk, or keep typing.'; speak('Voice replies are on. Ask me anything, or tap a treatment below to book.'); }
+ else { st.textContent='Voice off.'; if('speechSynthesis' in window){ try{window.speechSynthesis.cancel();}catch(e){} } }
+}
+function startListening(){
+ var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ var st=document.getElementById('voiceStatus'), mb=document.getElementById('micBtn');
+ if(!SR){ st.textContent='Voice typing needs Chrome or Edge on this device — turn Voice replies on to still hear the assistant speak.'; return; }
+ if(recog){ try{recog.stop();}catch(e){} }
+ recog=new SR(); recog.lang='en-GB'; recog.interimResults=false; recog.maxAlternatives=1;
+ mb.classList.add('listening'); st.textContent='🎙️ Listening… speak now.';
+ recog.onresult=function(ev){ var t=ev.results[0][0].transcript; state.voiceUsed=true; handleUserText(t); };
+ recog.onerror=function(){ st.textContent='I could not hear that clearly — please try again, or type your message.'; };
+ recog.onend=function(){ mb.classList.remove('listening'); if(voiceOn){ st.textContent='Voice on — tap 🎙️ to speak again.'; } };
+ try{ recog.start(); }catch(e){}
+}
+function startVoiceCall(){
+ if(!voiceOn){ voiceOn=true; setVoiceUI(); }
+ addMsg("📞 <b>Voice call started.</b> I'll speak my replies out loud, like a receptionist on the phone. Tap 🎙️ below and just talk — say what you need, for example “I need a check-up”, and I'll book you in.",'bot');
+ document.getElementById('voiceStatus').textContent='Voice call live — tap 🎙️ and speak.';
+ setTimeout(startListening,1600);
+}
+start();
+</script>
+</body>
+</html>
