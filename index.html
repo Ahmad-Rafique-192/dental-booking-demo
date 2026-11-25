@@ -256,14 +256,14 @@ footer{padding:28px 0 40px;color:var(--muted);font-size:13px;text-align:center}
   </div>
 
   <section id="email" style="padding-top:0">
-    <div class="sec-head"><div class="kicker">For Ahmad — outreach copy</div><h2>The personalised email that sends clinics to this demo</h2><p>Each email is personalised with the clinic's name, city and its specific gap (no online booking, no chatbot — from the 538-clinic research). Confirmed with Ahmad: <b>no price is quoted</b> — the only ask is a 10-minute call; the product covers <b>website + WhatsApp</b>, set up per clinic's wishes; emails go from his Gmail with replies to email or WhatsApp. This page does not send email itself — sending happens in small batches from Ahmad's Gmail.</p></div>
+    <div class="sec-head"><div class="kicker">For Ahmad — outreach copy</div><h2>The email that sends clinics to this demo</h2><p>Written so every clinic feels it was written for them — plain second person, no placeholders, no mail-merge fields. The emails actually sent are this same text, personalised with each clinic's real name and city. <b>No price is quoted</b> — the only ask is a 10-minute call; the product covers <b>website + WhatsApp</b>, set up per clinic's wishes; emails go from his Gmail with replies to email or WhatsApp. This page does not send email itself — sending happens in small batches from Ahmad's Gmail.</p></div>
     <div class="card" style="margin-top:18px">
-      <p style="color:var(--muted);font-size:13px;margin:0 0 8px">Subject: [Clinic Name] — patients in [City] can't book online yet (I built you a demo)</p>
+      <p style="color:var(--muted);font-size:13px;margin:0 0 8px">Subject: Your patients can't book online yet — I built you a demo</p>
       <div style="font-size:15px">
-        <p>Hi [Clinic Name] team,</p>
-        <p>I was looking at dental clinics in [City] and noticed [Clinic Name] has no online booking and no chat on the website — so after hours, a patient who wants an appointment has to call and wait, and many simply book with the next clinic that replies.</p>
-        <p>I build a small booking assistant for clinics in exactly this position. It sits on your website and WhatsApp — both, or whichever you prefer, set up the way your clinic wants it — answers price / hours / parking questions instantly (patients can type or talk to it by voice), and books patients into your real calendar, 24/7. I made a live demo so you can see exactly how it would work for your patients: <b>[link to this demo page]</b> — tap it and try booking an appointment, including the voice agent at the top of the demo.</p>
-        <p>Why me? I'm Ahmad Rafique, a Software Engineering student at COMSATS University in Pakistan. I build websites and stores for international clients and I'm funding my studies through this work — so you get the build done personally by me, at well below agency prices, and you talk directly to the person who built it. Send me your price list and opening hours and I'll return a private test version with [Clinic Name] on it, free to try, before you decide anything.</p>
+        <p>Hi,</p>
+        <p>I was looking at dental clinics in your area and noticed yours has no online booking and no chat on the website — so after hours, a patient who wants an appointment has to call and wait, and many simply book with the next clinic that replies.</p>
+        <p>I build a small booking assistant for clinics in exactly this position. It sits on your website and WhatsApp — both, or whichever you prefer, set up the way you want it — answers price / hours / parking questions instantly (patients can type or talk to it by voice), and books patients into your real calendar, 24/7. I made a live demo so you can see exactly how it would work for your patients: <a href="https://ahmad-rafique-192.github.io/dental-booking-demo/">ahmad-rafique-192.github.io/dental-booking-demo</a> — tap it and try booking an appointment, including the voice agent at the top of the demo.</p>
+        <p>Why me? I'm Ahmad Rafique, a Software Engineering student at COMSATS University in Pakistan. I build websites and stores for international clients and I'm funding my studies through this work — so you get the build done personally by me, at well below agency prices, and you talk directly to the person who built it. Send me your price list and opening hours and I'll return a private test version with your clinic's name on it, free to try, before you decide anything.</p>
         <p>Would a 10-minute call this week work to see if it fits your clinic?</p>
         <p>Best regards,<br><b>Ahmad Rafique</b> — JackwithJones<br>ahmadrafiquevhr@gmail.com<br>Phone / WhatsApp: +92 329 0192192</p>
       </div>
@@ -275,7 +275,7 @@ footer{padding:28px 0 40px;color:var(--muted);font-size:13px;text-align:center}
 
 <script>
 var chat=document.getElementById('chat'), chips=document.getElementById('chips'), form=document.getElementById('chatForm'), input=document.getElementById('chatInput');
-var state={step:'service', service:null, date:null, time:null, name:null, voiceUsed:false};
+var state={step:'service', service:null, date:null, time:null, name:null, voiceUsed:false, askedBook:false, pendingService:null};
 var services=[
  {id:'checkup',label:'Check-up & Clean',price:'£65',mins:'45 min'},
  {id:'whitening',label:'Teeth Whitening',price:'£249',mins:'60 min'},
@@ -283,6 +283,41 @@ var services=[
  {id:'invisalign',label:'Invisalign Consultation',price:'Free',mins:'30 min'},
  {id:'implant',label:'Implant Consultation',price:'Free',mins:'40 min'}
 ];
+var TIMES=['09:00','10:30','13:00','15:30','17:00'];
+var faqChips=[{label:'💷 See all prices',value:'prices',type:'faq'},{label:'🕐 Opening hours',value:'hours',type:'faq'},{label:'📞 Talk to a human',value:'human',type:'faq'}];
+function dateChips(){return nextDays().map(function(d){return {label:fmtDate(d),value:fmtDate(d),type:'date'};});}
+function timeChips(){return TIMES.map(function(t){return {label:t,value:t,type:'time'};});}
+function findService(low){
+ if(/\b(whiten|whitening)\b/.test(low)) return services[1];
+ if(/\b(emergency|pain|hurt|ache|swollen|swelling|broken tooth|toothache)\b/.test(low)) return services[2];
+ if(/\b(invisalign|aligner|braces|straighten)\b/.test(low)) return services[3];
+ if(/\b(implant)\b/.test(low)) return services[4];
+ if(/\b(check[- ]?up|clean|hygienist|scale and polish)\b/.test(low)) return services[0];
+ return null;
+}
+function parseDate(low){
+ var days=nextDays();
+ if(low.indexOf('tomorrow')>-1) return fmtDate(days[0]);
+ for(var i=0;i<days.length;i++){
+  var label=fmtDate(days[i]).toLowerCase();
+  if(low.indexOf(label)>-1) return fmtDate(days[i]);
+  var wdLong=days[i].toLocaleDateString('en-GB',{weekday:'long'}).toLowerCase();
+  if(low.indexOf(wdLong)>-1) return fmtDate(days[i]);
+  var wdShort=days[i].toLocaleDateString('en-GB',{weekday:'short'}).toLowerCase();
+  if(low.indexOf(wdShort)>-1) return fmtDate(days[i]);
+ }
+ return null;
+}
+function parseTime(low){
+ var m=low.match(/(\d{1,2})[:.](\d{2})\s*(am|pm)?/);
+ if(m){var h=parseInt(m[1],10); if(m[3]==='pm'&&h<12)h+=12; if(m[3]==='am'&&h===12)h=0; var t=('0'+h).slice(-2)+':'+m[2]; if(TIMES.indexOf(t)>-1) return t;}
+ var m2=low.match(/\b(\d{1,2})\s*(am|pm)\b/);
+ if(m2){var h2=parseInt(m2[1],10); if(m2[2]==='pm'&&h2<12)h2+=12; if(m2[2]==='am'&&h2===12)h2=0; var t2=('0'+h2).slice(-2)+':00'; if(TIMES.indexOf(t2)>-1) return t2;}
+ if(low.indexOf('morning')>-1||low.indexOf('first')>-1||low.indexOf('earliest')>-1) return '09:00';
+ if(low.indexOf('afternoon')>-1) return '13:00';
+ if(low.indexOf('evening')>-1||low.indexOf('after work')>-1) return '17:00';
+ return null;
+}
 function fmtDate(d){return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});}
 function nextDays(){var out=[],d=new Date();d.setDate(d.getDate()+1);while(out.length<4){if(d.getDay()!==0) out.push(new Date(d)); d.setDate(d.getDate()+1);} return out;}
 function scroll(){chat.scrollTop=chat.scrollHeight;}
@@ -291,11 +326,11 @@ function typing(cb,delay){var t=document.createElement('div');t.className='typin
 function setChips(items){chips.innerHTML='';items.forEach(function(it){var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=it.label;b.onclick=function(){handleChip(it);};chips.appendChild(b);});}
 function serviceChips(){return services.map(function(s){return {label:s.label+' — '+s.price, value:s.id, type:'service'};});}
 function start(){
- chat.innerHTML=''; state={step:'service',service:null,date:null,time:null,name:null,voiceUsed:false};
+ chat.innerHTML=''; state={step:'service',service:null,date:null,time:null,name:null,voiceUsed:false,askedBook:false,pendingService:null};
  document.getElementById('bookingCard').style.display='none'; document.getElementById('inboxEmpty').style.display='block';
  typing(function(){
   addMsg("Hi 👋 Welcome to <b>BrightSmile Dental</b>. I can answer questions or book you in — it takes under a minute.<br><br>What would you like to book?",'bot');
-  setChips(serviceChips().concat([{label:'💷 See all prices',value:'prices',type:'faq'},{label:'🕐 Opening hours',value:'hours',type:'faq'},{label:'📞 Talk to a human',value:'human',type:'faq'}]));
+  setChips(serviceChips().concat(faqChips));
  });
 }
 function handleChip(it){
@@ -312,10 +347,10 @@ function selectService(s){
   if(s.id==='emergency'){addMsg("I'm sorry you're in pain — we'll get you seen as soon as possible. Here are the earliest available appointments:",'bot');}
   else{addMsg("Great choice. <b>"+s.label+"</b> is <b>"+s.price+"</b> ("+s.mins+"). Which day suits you best?",'bot');}
   state.step='date';
-  setChips(nextDays().map(function(d){return {label:fmtDate(d),value:fmtDate(d),type:'date'};}));
+  setChips(dateChips());
  });
 }
-function askTime(){typing(function(){addMsg("Perfect — <b>"+state.date+"</b>. These times are free for <b>"+state.service.label+"</b>:<br>Pick one:",'bot');state.step='time';setChips(['09:00','10:30','13:00','15:30','17:00'].map(function(t){return {label:t,value:t,type:'time'};}));});}
+function askTime(){typing(function(){addMsg("Perfect — <b>"+state.date+"</b>. These times are free for <b>"+state.service.label+"</b>:<br>Pick one:",'bot');state.step='time';setChips(timeChips());});}
 function askName(){typing(function(){addMsg("Almost done. What name should I book it under? Just type your name below 👇",'bot');state.step='name';setChips([]);input.focus();});}
 function confirmBooking(){
  typing(function(){
@@ -329,7 +364,6 @@ function confirmBooking(){
 function faqAnswer(q){
  var s=q.toLowerCase();
  if(s.indexOf('whiten')>-1) return "Teeth whitening is <b>£249</b> (60 minutes), including a check that your teeth are suitable first. Would you like me to book you in?";
- if(s.indexOf('price')>-1||s.indexOf('cost')>-1||s.indexOf('much')>-1) return "<b>Our prices:</b><br>• Check-up &amp; Clean — £65<br>• Teeth Whitening — £249<br>• Emergency appointment — from £85<br>• Invisalign consultation — Free<br>• Implant consultation — Free<br><br>Tap a treatment below to book it.";
  if(s.indexOf('park')>-1) return "Yes — we have free patient parking right outside the clinic, plus we're a 3-minute walk from the station. Would you like to book a visit?";
  if(s.indexOf('hour')>-1||s.indexOf('open')>-1||s.indexOf('saturday')>-1) return "We're open <b>Mon–Fri 9am–6pm</b> and <b>Saturday 9am–2pm</b>. This assistant can book you in 24/7, even when we're closed. Want me to find you a slot?";
  if(s.indexOf('pain')>-1||s.indexOf('emergency')>-1||s.indexOf('hurt')>-1||s.indexOf('ache')>-1) return "I'm sorry you're in pain. For severe pain, swelling or a broken tooth, please also call us. I can book you the <b>earliest emergency slot</b> right now — tap below.";
@@ -345,20 +379,102 @@ function faqAnswer(q){
  if(s.indexOf('review')>-1||s.indexOf('rating')>-1) return "We're rated <b>4.9 out of 5</b> from 480+ patient reviews at this demo clinic. After your visit, the assistant also sends a friendly review request automatically — that's how clinics grow their rating without pestering anyone.";
  if(s.indexOf('child')>-1||s.indexOf('kids')>-1||s.indexOf('family')>-1) return "Yes, we see children and families — check-ups for under-16s are half price when booked with an adult appointment. Shall I find a slot that suits the family?";
  if(s.indexOf('nervous')>-1||s.indexOf('scared')>-1||s.indexOf('anxious')>-1||s.indexOf('afraid')>-1) return "You're not alone — lots of our patients feel nervous. Tell the dentist when you arrive; appointments are unhurried and you can pause at any time. Booking the first slot of the day (09:00) usually feels calmest. Shall I look for one?";
+ if(s.indexOf('implant')>-1) return "Implant consultations are <b>free</b> (40 minutes) — the dentist will assess your case and give you a fixed quote, no obligation. Shall I book yours?";
+ if(s.indexOf('filling')>-1) return "White (tooth-coloured) fillings start from <b>£95</b> and usually take 30–45 minutes. Shall I book you in for an assessment?";
+ if(s.indexOf('crown')>-1) return "Crowns start from <b>£450</b>, including the fitting. The dentist confirms the exact price after a check-up. Shall I book you in?";
+ if(s.indexOf('denture')>-1) return "We fit partial and full dentures — prices start from <b>£600</b> after a free consultation with the dentist. Shall I book yours?";
+ if(s.indexOf('brace')>-1||s.indexOf('orthodont')>-1) return "For straightening, we offer <b>Invisalign clear aligners</b> — consultations are free and include a scan and a personalised quote. Shall I book yours?";
+ if(s.indexOf('new patient')>-1||s.indexOf('new here')>-1||s.indexOf('register')>-1) return "Yes — we're accepting new patients. Your first visit is a check-up &amp; clean for <b>£65</b>, and we keep your full history on file. Shall I book your first appointment?";
+ if(s.indexOf('how long')>-1||(s.indexOf('take')>-1&&s.indexOf('long')>-1)) return "A check-up &amp; clean takes about <b>45 minutes</b>, whitening about <b>60 minutes</b>, and an emergency visit about <b>30 minutes</b>. Shall I find you a slot?";
+ if(s.indexOf('painful')>-1||s.indexOf('does it hurt')>-1) return "We use gentle techniques and numbing gel, and most patients are surprised how comfortable it is. Tell us you're nervous and we'll go slowly — you can pause any time. Shall I book you in?";
+ if(s.indexOf('price')>-1||s.indexOf('cost')>-1||s.indexOf('much')>-1) return "<b>Our prices:</b><br>• Check-up &amp; Clean — £65<br>• Teeth Whitening — £249<br>• Emergency appointment — from £85<br>• Invisalign consultation — Free<br>• Implant consultation — Free<br><br>Tap a treatment below to book it.";
+ if(s.indexOf('treatment')>-1||s.indexOf('service')>-1||s.indexOf('what do you')>-1||s.indexOf('offer')>-1) return "<b>What we do:</b><br>• Check-up &amp; Clean — £65<br>• Teeth Whitening — £249<br>• Emergency — from £85<br>• Invisalign consultation — Free<br>• Implant consultation — Free<br><br>Tap a treatment below to book it.";
  return null;
 }
 function quickAsk(q){
- if(!q) return; addMsg(q,'user');
- typing(function(){var a=faqAnswer(q); if(a){addMsg(a,'bot'); if(state.step==='service'||state.step==='done'){setChips(serviceChips());}} else {addMsg("I can help with bookings, prices, hours, parking and insurance. For anything clinical, the dentist will advise you at your appointment. Would you like to book a check-up?",'bot'); setChips(serviceChips());}});
+ if(!q) return; handleUserText(q);
 }
 function handleUserText(v){
  v=(v||'').trim(); if(!v) return;
+ var low=v.toLowerCase();
+ /* --- mid-booking steps: typed answers must work, not fall back --- */
  if(state.step==='name'){
-   state.name=v.charAt(0).toUpperCase()+v.slice(1); addMsg(v,'user');
-   typing(function(){addMsg("Thanks, <b>"+state.name+"</b> — just to confirm:<br><br>🦷 "+state.service.label+"<br>📅 "+state.date+" at "+state.time+"<br><br>Shall I confirm this booking?",'bot'); state.step='confirm'; setChips([{label:'✓ Yes, confirm my booking',value:'confirm',type:'confirm'},{label:'Start again',value:'restart',type:'restart'}]);});
-   return;
+  if(/\b(cancel|start again|restart)\b/.test(low)){ addMsg(v,'user'); start(); return; }
+  var aN=faqAnswer(v);
+  if(v.indexOf('?')>-1||aN){ addMsg(v,'user'); typing(function(){ if(aN) addMsg(aN,'bot'); addMsg("And what name should I book it under? Just type your name below 👇",'bot'); setChips([]); }); return; }
+  state.name=v.replace(/^my name is\s+/i,'').replace(/\b\w/g,function(c){return c.toUpperCase();}); addMsg(v,'user');
+  typing(function(){addMsg("Thanks, <b>"+state.name+"</b> — just to confirm:<br><br>🦷 "+state.service.label+"<br>📅 "+state.date+" at "+state.time+"<br><br>Shall I confirm this booking?",'bot'); state.step='confirm'; setChips([{label:'✓ Yes, confirm my booking',value:'confirm',type:'confirm'},{label:'Start again',value:'restart',type:'restart'}]);});
+  return;
  }
- quickAsk(v);
+ if(state.step==='confirm'){
+  addMsg(v,'user');
+  if(/\b(yes|yeah|yep|confirm|correct|ok|okay|sure|please do)\b/.test(low)){ confirmBooking(); return; }
+  if(/\b(no|wrong|change|different)\b/.test(low)){ typing(function(){addMsg("No problem — pick a new day below, or start again if you'd like a different treatment.",'bot'); state.step='date'; setChips(dateChips());}); return; }
+  typing(function(){var a=faqAnswer(v); if(a){addMsg(a,'bot');} else {addMsg("Just say <b>yes</b> to confirm, or <b>no</b> if you'd like to change anything.",'bot');} setChips([{label:'✓ Yes, confirm my booking',value:'confirm',type:'confirm'},{label:'Start again',value:'restart',type:'restart'}]);});
+  return;
+ }
+ if(state.step==='date'){
+  var d=parseDate(low);
+  if(d){ state.date=d; addMsg(v,'user'); askTime(); return; }
+  addMsg(v,'user');
+  var s2=findService(low);
+  if(s2){ selectService(s2); return; }
+  typing(function(){var a=faqAnswer(v); if(a){addMsg(a,'bot');} else {addMsg("I have these days open — tap one above, or say a day like <b>tomorrow</b> or <b>Friday</b>.",'bot');} setChips(dateChips());});
+  return;
+ }
+ if(state.step==='time'){
+  var t=parseTime(low);
+  if(t){ state.time=t; addMsg(v,'user'); askName(); return; }
+  addMsg(v,'user');
+  typing(function(){var a=faqAnswer(v); if(a){addMsg(a,'bot');} else {addMsg("Those are the free times for <b>"+state.service.label+"</b> — tap one above, or say a time like <b>10:30</b>, <b>morning</b> or <b>afternoon</b>.",'bot');} setChips(timeChips());});
+  return;
+ }
+ /* --- free conversation (step service / done) --- */
+ addMsg(v,'user');
+ if(/\b(emergency|severe pain|really hurt|hurts a lot|toothache|broken tooth|swelling|swollen)\b/.test(low)){
+  typing(function(){addMsg("I'm sorry you're in pain — let's get you seen as soon as possible. Here are the earliest appointments:",'bot'); selectService(services[2]);});
+  return;
+ }
+ var svc=findService(low);
+ if(svc && (/\b(book|appointment|need|want|get|have|schedule|reserve)\b/.test(low) || v.trim().split(/\s+/).length<=3)){ selectService(svc); return; }
+ if(/\b(book|appointment|schedule|reserve)\b/.test(low)){
+  typing(function(){addMsg("Happy to book you in — which treatment would you like?",'bot'); setChips(serviceChips());});
+  return;
+ }
+ if(/^(hi|hello|hey|good (morning|afternoon|evening)|salam|aoa)\b/.test(low)){
+  typing(function(){addMsg("Hi there 👋 Welcome to <b>BrightSmile Dental</b>. I can book you in, or answer questions about prices, hours, parking, insurance and treatments. What do you need?",'bot'); setChips(serviceChips().concat(faqChips));});
+  return;
+ }
+ if(/\b(thank|thanks)\b/.test(low)){
+  typing(function(){addMsg("You're very welcome 😊 Anything else — book a visit, check a price, or ask about opening hours?",'bot'); setChips(serviceChips().concat(faqChips));});
+  return;
+ }
+ if(state.askedBook && /\b(yes|yeah|yep|ok|okay|sure|please)\b/.test(low)){
+  var pending=state.pendingService; state.askedBook=false; state.pendingService=null;
+  typing(function(){
+   if(pending){ selectService(pending); }
+   else { addMsg("Lovely — which treatment would you like to book?",'bot'); setChips(serviceChips()); }
+  });
+  return;
+ }
+ if(state.askedBook && /\bno\b/.test(low)){
+  state.askedBook=false; state.pendingService=null;
+  typing(function(){addMsg("No problem at all. Is there anything else I can help with — prices, hours, parking, or something else?",'bot'); setChips(serviceChips().concat(faqChips));});
+  return;
+ }
+ typing(function(){
+  var a=faqAnswer(v);
+  if(a){
+   addMsg(a,'bot');
+   state.pendingService=findService(low);
+   state.askedBook=/book|shall i|want me|would you like/i.test(a);
+   setChips(serviceChips().concat(faqChips));
+  } else {
+   state.askedBook=false; state.pendingService=null;
+   addMsg("I can book you in, or answer questions about <b>prices</b>, <b>opening hours</b>, <b>parking</b>, <b>insurance</b> and <b>treatments</b>. What do you need?",'bot');
+   setChips(serviceChips().concat(faqChips));
+  }
+ });
 }
 form.addEventListener('submit',function(e){
  e.preventDefault(); var v=input.value; input.value=''; handleUserText(v);
